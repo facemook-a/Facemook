@@ -1,0 +1,15 @@
+{
+  "version": "0.4.0",
+  "engine": "Godot 4.6.3 stable",
+  "checks_passed": {
+    "gameplay": 28,
+    "polish": 25,
+    "restore": 1
+  },
+  "total": 54,
+  "fresh_zip_import": "passed",
+  "graphics": "Actual OpenGL Compatibility captures using Mesa llvmpipe on X11",
+  "android_apk": "Not built: Android templates and SDK configuration unavailable",
+  "physical_android_testing": "Not performed",
+  "sha256": "034cd37011ca711f1be7cdc5d521e76101a37ad4b4624e875a0ffd8a5d1eaacf"
+}

@@ -1,0 +1,4 @@
+The music and sound effects in this folder are original procedural synthesizer
+recordings made for this project, not recordings of commercial music.
+They are released under CC0: https://creativecommons.org/publicdomain/zero/1.0/
+generate_audio.py is an optional regeneration tool requiring Python and NumPy.

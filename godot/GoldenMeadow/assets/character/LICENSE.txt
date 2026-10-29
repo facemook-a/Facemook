@@ -1,0 +1,7 @@
+The anatomical head, scalp surface and adult companion base are derived from the MakeHuman base mesh.
+Source: https://github.com/makehumancommunity/makehuman/blob/master/makehuman/data/3dobjs/base.obj
+The source header explicitly releases this asset under CC0 (September 2020).
+CC0: https://creativecommons.org/publicdomain/zero/1.0/
+
+The face image is an AI-generated approximation using the user-supplied photograph
+as reference. This model is not a facial scan and does not guarantee exact likeness.
