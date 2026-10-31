@@ -1,0 +1,1 @@
+<resources><style name="Theme.MoroccoFactory" parent="Theme.MoroccoFactory.Base"><item name="android:windowLightStatusBar">false</item></style></resources>
