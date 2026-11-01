@@ -1,0 +1,15 @@
+Upstream v0.7.64, commit 73ce3c99dde39207990d66c21be8201228cd1f09.
+Library uses official-release native artifacts, a skeleton configuration, no exported external API, and local source changes to route service intents to the entitlement-aware B5 subclass, target the actual launcher activity, enable full tunnel blocking I/O, and preserve a fail-closed service after transport exit. Main resources/aidl and upstream license notices retained.
+Changed/added Java paths (including selected upstream skeleton files):
+de/blinkt/openvpn/LaunchVPN.java
+de/blinkt/openvpn/VpnProfile.java
+de/blinkt/openvpn/api/ExternalOpenVPNService.java
+de/blinkt/openvpn/api/ConfirmDialog.java
+de/blinkt/openvpn/api/RemoteAction.java
+de/blinkt/openvpn/activities/DisconnectVPN.java
+de/blinkt/openvpn/activities/NotImplemented.java
+de/blinkt/openvpn/core/VpnServiceTarget.java
+de/blinkt/openvpn/core/ProfileEncryption.java
+de/blinkt/openvpn/core/OpenVPNService.java
+de/blinkt/openvpn/core/VariantConfig.java
+See third-party/ for full corresponding native source and provenance.

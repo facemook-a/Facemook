@@ -1,0 +1,25 @@
+{
+  "_B5_PLACEHOLDER": "Replace with downloaded Firebase Android config. This template is not a live Firebase project; manual FirebaseOptions initialization also supports in-app setup.",
+  "project_info": {
+    "project_number": "000000000000",
+    "project_id": "YOUR_PROJECT_ID",
+    "firebase_url": "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+    "storage_bucket": "YOUR_PROJECT_ID.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:000000000000:android:REPLACE_ME",
+        "android_client_info": {
+          "package_name": "com.usa.admin"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "YOUR_WEB_API_KEY"
+        }
+      ]
+    }
+  ],
+  "configuration_version": "1"
+}

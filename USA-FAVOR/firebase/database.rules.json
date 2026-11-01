@@ -1,0 +1,109 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "admins": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || (auth != null && root.child('admins').child(auth.uid).val() === true))",
+        ".write": false,
+        ".validate": "newData.isBoolean()"
+      }
+    },
+    "codes": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$code": {
+        ".read": "auth != null",
+        ".write": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && data.exists() && data.child('used').val() === false && newData.child('used').val() === true && newData.child('isActive').val() === true && newData.child('ownerUid').val() === auth.uid && newData.child('deviceId').isString() && newData.child('deviceModel').isString() && newData.child('duration').val() === data.child('duration').val() && newData.child('createdAt').val() === data.child('createdAt').val() && ((data.child('duration').val() === '1H' && newData.child('expiryAt').val() >= now + 3590000 && newData.child('expiryAt').val() <= now + 3610000) || (data.child('duration').val() === '1D' && newData.child('expiryAt').val() >= now + 86390000 && newData.child('expiryAt').val() <= now + 86410000) || (data.child('duration').val() === '7D' && newData.child('expiryAt').val() >= now + 604790000 && newData.child('expiryAt').val() <= now + 604810000) || (data.child('duration').val() === '30D' && newData.child('expiryAt').val() >= now + 2591990000 && newData.child('expiryAt').val() <= now + 2592010000) || (data.child('duration').val() === 'LIFETIME' && !newData.child('expiryAt').exists())))",
+        ".validate": "$code.matches(/^USA-[A-Z0-9]{4}$/) && newData.hasChildren(['duration','used','createdAt','isActive']) && ((!newData.child('used').val() && !newData.child('isActive').val() && !newData.child('ownerUid').exists() && !newData.child('deviceId').exists() && !newData.child('expiryAt').exists()) || (newData.child('used').val() && newData.hasChildren(['ownerUid','deviceId','deviceModel']) && ((newData.child('duration').val() === 'LIFETIME' && !newData.child('expiryAt').exists()) || (newData.child('duration').val() !== 'LIFETIME' && newData.child('expiryAt').isNumber()))))",
+        "duration": {
+          ".validate": "newData.isString() && newData.val().matches(/^(1H|1D|7D|30D|LIFETIME)$/)"
+        },
+        "used": {
+          ".validate": "newData.isBoolean()"
+        },
+        "isActive": {
+          ".validate": "newData.isBoolean()"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber() && ((!data.exists() && newData.val() <= now + 10000) || newData.val() === data.val())"
+        },
+        "deviceId": {
+          ".validate": "newData.isString() && newData.val().matches(/^[a-f0-9]{16}$/)"
+        },
+        "deviceModel": {
+          ".validate": "newData.isString() && newData.val().length <= 160"
+        },
+        "ownerUid": {
+          ".validate": "newData.isString() && newData.val().length <= 128"
+        },
+        "expiryAt": {
+          ".validate": "newData.isNumber() && newData.val() > 0"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "users": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      ".indexOn": [
+        "isOnline",
+        "lastSeen",
+        "codeUsed"
+      ],
+      "$device": {
+        ".read": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && data.child('ownerUid').val() === auth.uid)",
+        ".write": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && newData.exists() && newData.child('ownerUid').val() === auth.uid && ((root.child('codes').child(newData.child('codeUsed').val()).child('ownerUid').val() === auth.uid && root.child('codes').child(newData.child('codeUsed').val()).child('deviceId').val() === $device && root.child('codes').child(newData.child('codeUsed').val()).child('isActive').val() === true && (!root.child('codes').child(newData.child('codeUsed').val()).child('expiryAt').exists() || root.child('codes').child(newData.child('codeUsed').val()).child('expiryAt').val() > now)) || (data.child('ownerUid').val() === auth.uid && newData.child('codeUsed').val() === data.child('codeUsed').val() && newData.child('isOnline').val() === false)))",
+        ".validate": "newData.hasChildren(['ownerUid','codeUsed','deviceModel','ip','country','connectedAt','lastSeen','isOnline']) && (!data.exists() || data.child('ownerUid').val() === newData.child('ownerUid').val())",
+        "ownerUid": {
+          ".validate": "newData.isString()"
+        },
+        "codeUsed": {
+          ".validate": "newData.isString() && newData.val().matches(/^USA-[A-Z0-9]{4}$/)"
+        },
+        "deviceModel": {
+          ".validate": "newData.isString() && newData.val().length <= 160"
+        },
+        "ip": {
+          ".validate": "newData.isString() && newData.val().length <= 100"
+        },
+        "country": {
+          ".validate": "newData.isString() && newData.val().length <= 60"
+        },
+        "connectedAt": {
+          ".validate": "newData.isNumber() && newData.val() <= now + 10000"
+        },
+        "lastSeen": {
+          ".validate": "newData.isNumber() && newData.val() >= now - 130000 && newData.val() <= now + 10000"
+        },
+        "isOnline": {
+          ".validate": "newData.isBoolean()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "config": {
+      "socials": {
+        ".read": true,
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+        "tiktok": {
+          ".validate": "newData.isString() && newData.val().length <= 2048 && (newData.val() === '' || newData.val().matches(/^https:\\/\\/[^\\s]+$/))"
+        },
+        "instagram": {
+          ".validate": "newData.isString() && newData.val().length <= 2048 && (newData.val() === '' || newData.val().matches(/^https:\\/\\/[^\\s]+$/))"
+        },
+        "youtube": {
+          ".validate": "newData.isString() && newData.val().length <= 2048 && (newData.val() === '' || newData.val().matches(/^https:\\/\\/[^\\s]+$/))"
+        },
+        "telegram": {
+          ".validate": "newData.isString() && newData.val().length <= 2048 && (newData.val() === '' || newData.val().matches(/^https:\\/\\/[^\\s]+$/))"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  }
+}

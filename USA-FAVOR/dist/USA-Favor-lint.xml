@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.9.1">
+
+    <issue
+        id="InlinedApi"
+        severity="Warning"
+        message="Field requires API level 31 (current min is 26): `android.location.provider.ProviderProperties#ACCURACY_FINE`"
+        category="Correctness"
+        priority="6"
+        summary="Using inlined constants on older versions"
+        explanation="This check scans through all the Android API field references in the application and flags certain constants, such as static final integers and Strings, which were introduced in later versions. These will actually be copied into the class files rather than being referenced, which means that the value is available even when running on older devices. In some cases that&apos;s fine, and in other cases it can result in a runtime crash or incorrect behavior. It depends on the context, so consider the code carefully and decide whether it&apos;s safe and can be suppressed or whether the code needs to be guarded.&#xA;&#xA;If you really want to use this API and don&apos;t need to support older devices just set the `minSdkVersion` in your `build.gradle` or `AndroidManifest.xml` files.&#xA;&#xA;If your code is **deliberately** accessing newer APIs, and you have ensured (e.g. with conditional execution) that this code will only ever be called on a supported platform, then you can annotate your class or method with the `@TargetApi` annotation specifying the local minimum SDK to apply, such as `@TargetApi(11)`, such that this check considers 11 rather than your manifest file&apos;s minimum SDK as the required API level."
+        errorLine1="public final class MockGps {private final LocationManager manager;private boolean installed=false;public MockGps(Context c){manager=(LocationManager)c.getSystemService(Context.LOCATION_SERVICE);}public void update(){if(!installed){manager.addTestProvider(LocationManager.GPS_PROVIDER,false,false,false,false,true,true,true,android.location.provider.ProviderProperties.POWER_USAGE_LOW,android.location.provider.ProviderProperties.ACCURACY_FINE);manager.setTestProviderEnabled(LocationManager.GPS_PROVIDER,true);installed=true;}Location l=new Location(LocationManager.GPS_PROVIDER);l.setLatitude(40.7128);l.setLongitude(-74.0060);l.setAccuracy(3);l.setTime(System.currentTimeMillis());l.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());manager.setTestProviderLocation(LocationManager.GPS_PROVIDER,l);}public void stop(){if(installed){try{manager.removeTestProvider(LocationManager.GPS_PROVIDER);}catch(Exception ignored){}installed=false;}}}"
+        errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/USA-FAVOR/USA-Favor/app/src/main/java/com/b5/vpn/MockGps.java"
+            line="3"
+            column="385"/>
+    </issue>
+
+    <issue
+        id="InlinedApi"
+        severity="Warning"
+        message="Field requires API level 31 (current min is 26): `android.location.provider.ProviderProperties#POWER_USAGE_LOW`"
+        category="Correctness"
+        priority="6"
+        summary="Using inlined constants on older versions"
+        explanation="This check scans through all the Android API field references in the application and flags certain constants, such as static final integers and Strings, which were introduced in later versions. These will actually be copied into the class files rather than being referenced, which means that the value is available even when running on older devices. In some cases that&apos;s fine, and in other cases it can result in a runtime crash or incorrect behavior. It depends on the context, so consider the code carefully and decide whether it&apos;s safe and can be suppressed or whether the code needs to be guarded.&#xA;&#xA;If you really want to use this API and don&apos;t need to support older devices just set the `minSdkVersion` in your `build.gradle` or `AndroidManifest.xml` files.&#xA;&#xA;If your code is **deliberately** accessing newer APIs, and you have ensured (e.g. with conditional execution) that this code will only ever be called on a supported platform, then you can annotate your class or method with the `@TargetApi` annotation specifying the local minimum SDK to apply, such as `@TargetApi(11)`, such that this check considers 11 rather than your manifest file&apos;s minimum SDK as the required API level."
+        errorLine1="public final class MockGps {private final LocationManager manager;private boolean installed=false;public MockGps(Context c){manager=(LocationManager)c.getSystemService(Context.LOCATION_SERVICE);}public void update(){if(!installed){manager.addTestProvider(LocationManager.GPS_PROVIDER,false,false,false,false,true,true,true,android.location.provider.ProviderProperties.POWER_USAGE_LOW,android.location.provider.ProviderProperties.ACCURACY_FINE);manager.setTestProviderEnabled(LocationManager.GPS_PROVIDER,true);installed=true;}Location l=new Location(LocationManager.GPS_PROVIDER);l.setLatitude(40.7128);l.setLongitude(-74.0060);l.setAccuracy(3);l.setTime(System.currentTimeMillis());l.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());manager.setTestProviderLocation(LocationManager.GPS_PROVIDER,l);}public void stop(){if(installed){try{manager.removeTestProvider(LocationManager.GPS_PROVIDER);}catch(Exception ignored){}installed=false;}}}"
+        errorLine2="                                                                                                                                                                                                                                                                                                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/USA-FAVOR/USA-Favor/app/src/main/java/com/b5/vpn/MockGps.java"
+            line="3"
+            column="324"/>
+    </issue>
+
+    <issue
+        id="HardwareIds"
+        severity="Warning"
+        message="Using `getString` to get device identifiers is not recommended"
+        category="Security"
+        priority="6"
+        summary="Hardware Id Usage"
+        explanation="Using these device identifiers is not recommended other than for high value fraud prevention and advanced telephony use-cases. For advertising use-cases, use `AdvertisingIdClient$Info#getId` and for analytics, use `InstanceId#getId`."
+        url="https://developer.android.com/training/articles/user-data-ids.html"
+        urls="https://developer.android.com/training/articles/user-data-ids.html"
+        errorLine1=" public Cloud(Context c){ctx=c.getApplicationContext();JSONObject j=config(c);FirebaseApp app;try{app=FirebaseApp.getInstance();}catch(IllegalStateException e){FirebaseOptions o=new FirebaseOptions.Builder().setProjectId(j.optString(&quot;projectId&quot;)).setApiKey(j.optString(&quot;apiKey&quot;)).setApplicationId(j.optString(&quot;applicationId&quot;)).setDatabaseUrl(j.optString(&quot;databaseUrl&quot;)).build();app=FirebaseApp.initializeApp(c,o);}auth=FirebaseAuth.getInstance(app);db=FirebaseDatabase.getInstance(app,j.optString(&quot;databaseUrl&quot;));root=db.getReference();deviceId=Settings.Secure.getString(c.getContentResolver(),Settings.Secure.ANDROID_ID);root.child(&quot;.info/connected&quot;).addValueEventListener(listener(s->{online=Boolean.TRUE.equals(s.getValue(Boolean.class));},m->{}));root.child(&quot;.info/serverTimeOffset&quot;).addValueEventListener(listener(s->{Long x=s.getValue(Long.class);offset=x==null?0:x;anchorWall=System.currentTimeMillis()+offset;anchorElapsed=android.os.SystemClock.elapsedRealtime();clockReady=true;},m->{}));}"
+        errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/USA-FAVOR/USA-Favor/app/src/main/java/com/b5/shared/Cloud.java"
+            line="6"
+            column="546"/>
+    </issue>
+
+    <issue
+        id="DataExtractionRules"
+        severity="Warning"
+        message="The attribute `android:allowBackup` is deprecated from Android 12 and higher and may be removed in future versions. Consider adding the attribute `android:dataExtractionRules` specifying an `@xml` resource which configures cloud backups and device transfers on Android 12 and higher."
+        category="Security"
+        priority="3"
+        summary="Missing data extraction rules"
+        explanation="Before Android 12, the attributes `android:allowBackup` and `android:fullBackupContent` were used to configure all forms of backup, including cloud backups, device-to-device transfers and adb backup.&#xA;&#xA;In Android 12 and higher, these attributes have been deprecated and will only apply to cloud backups. You should instead use the attribute `android:dataExtractionRules`, specifying an `@xml` resource that configures which files to back up, for cloud backups and for device-to-device transfers, separately. If your `minSdkVersion` supports older versions, you&apos;ll still want to specify an `android:fullBackupContent` resource if the default behavior is not right for your app."
+        url="https://developer.android.com/about/versions/12/backup-restore#xml-changes"
+        urls="https://developer.android.com/about/versions/12/backup-restore#xml-changes,https://goo.gle/DataExtractionRules"
+        errorLine1="&lt;uses-permission android:name=&quot;android.permission.FOREGROUND_SERVICE_LOCATION&quot;/>&lt;application android:allowBackup=&quot;false&quot; android:usesCleartextTraffic=&quot;false&quot; android:label=&quot;@string/app_name&quot; android:icon=&quot;@drawable/ic_b5&quot; android:theme=&quot;@style/B5Theme&quot; android:supportsRtl=&quot;true&quot;>&lt;activity android:name=&quot;.MainActivity&quot; android:exported=&quot;true&quot;>&lt;intent-filter>&lt;action android:name=&quot;android.intent.action.MAIN&quot;/>&lt;category android:name=&quot;android.intent.category.LAUNCHER&quot;/>&lt;/intent-filter>&lt;/activity>&lt;service android:name=&quot;com.b5.vpn.MockLocationService&quot; android:exported=&quot;false&quot; android:foregroundServiceType=&quot;location&quot;/>&lt;service android:name=&quot;com.b5.vpn.B5VpnService&quot; android:exported=&quot;false&quot; android:permission=&quot;android.permission.BIND_VPN_SERVICE&quot; android:foregroundServiceType=&quot;specialUse&quot;>&lt;intent-filter>&lt;action android:name=&quot;android.net.VpnService&quot;/>&lt;/intent-filter>&lt;property android:name=&quot;android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE&quot; android:value=&quot;OpenVPN encrypted tunnel with subscription expiry enforcement&quot;/>&lt;/service>&lt;service android:name=&quot;de.blinkt.openvpn.core.OpenVPNStatusService&quot; android:exported=&quot;false&quot;/>&lt;service android:name=&quot;de.blinkt.openvpn.core.keepVPNAlive&quot; android:exported=&quot;false&quot; android:permission=&quot;android.permission.BIND_JOB_SERVICE&quot;/>"
+        errorLine2="                                                                                                                  ~~~~~">
+        <location
+            file="/workspace/USA-FAVOR/USA-Favor/app/src/main/AndroidManifest.xml"
+            line="2"
+            column="115"/>
+    </issue>
+
+    <issue
+        id="DrawAllocation"
+        severity="Warning"
+        message="Avoid object allocations during draw/layout operations (preallocate and reuse instead)"
+        category="Performance"
+        priority="9"
+        summary="Memory allocations within drawing code"
+        explanation="You should avoid allocating objects during a drawing or layout operation. These are called frequently, so a smooth UI can be interrupted by garbage collection pauses caused by the object allocations.&#xA;&#xA;The way this is generally handled is to allocate the needed objects up front and to reuse them for each drawing operation.&#xA;&#xA;Some methods allocate memory on your behalf (such as `Bitmap.create`), and these should be handled in the same way."
+        errorLine1=" public static class Logo extends View {Paint p=new Paint(3);public Logo(Context c){super(c);setLayerType(View.LAYER_TYPE_SOFTWARE,null);}protected void onDraw(Canvas c){super.onDraw(c);float w=getWidth(),h=getHeight();c.save();c.scale(w/200f,h/200f);p.setShader(null);p.setColor(Color.rgb(234,199,115));p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(1);p.setShadowLayer(18,0,0,0x887D5827);c.drawRoundRect(12,12,188,188,36,36,p);p.clearShadowLayer();p.setStyle(Paint.Style.FILL);p.setTypeface(Typeface.create(&quot;sans-serif-black&quot;,Typeface.BOLD));p.setTextSize(116);p.setColor(0xFF30200E);c.drawText(&quot;B&quot;,31,145,p);c.drawText(&quot;5&quot;,104,145,p);p.setShader(new LinearGradient(0,40,175,170,new int[]{0xFFFFF0BE,0xFFEBC970,0xFF20170B,0xFFF8D989,0xFF90632B},null,Shader.TileMode.CLAMP));p.setShadowLayer(9,0,0,0x88EAC773);c.drawText(&quot;B&quot;,28,141,p);c.drawText(&quot;5&quot;,101,141,p);p.clearShadowLayer();p.setShader(null);c.restore();}}"
+        errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/USA-FAVOR/USA-Favor/app/src/main/java/com/b5/shared/BrandActivity.java"
+            line="18"
+            column="651"/>
+    </issue>
+
+    <issue
+        id="DrawAllocation"
+        severity="Warning"
+        message="Avoid object allocations during draw/layout operations (preallocate and reuse instead)"
+        category="Performance"
+        priority="9"
+        summary="Memory allocations within drawing code"
+        explanation="You should avoid allocating objects during a drawing or layout operation. These are called frequently, so a smooth UI can be interrupted by garbage collection pauses caused by the object allocations.&#xA;&#xA;The way this is generally handled is to allocate the needed objects up front and to reuse them for each drawing operation.&#xA;&#xA;Some methods allocate memory on your behalf (such as `Bitmap.create`), and these should be handled in the same way."
+        errorLine1=" public static class Logo extends View {Paint p=new Paint(3);public Logo(Context c){super(c);setLayerType(View.LAYER_TYPE_SOFTWARE,null);}protected void onDraw(Canvas c){super.onDraw(c);float w=getWidth(),h=getHeight();c.save();c.scale(w/200f,h/200f);p.setShader(null);p.setColor(Color.rgb(234,199,115));p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(1);p.setShadowLayer(18,0,0,0x887D5827);c.drawRoundRect(12,12,188,188,36,36,p);p.clearShadowLayer();p.setStyle(Paint.Style.FILL);p.setTypeface(Typeface.create(&quot;sans-serif-black&quot;,Typeface.BOLD));p.setTextSize(116);p.setColor(0xFF30200E);c.drawText(&quot;B&quot;,31,145,p);c.drawText(&quot;5&quot;,104,145,p);p.setShader(new LinearGradient(0,40,175,170,new int[]{0xFFFFF0BE,0xFFEBC970,0xFF20170B,0xFFF8D989,0xFF90632B},null,Shader.TileMode.CLAMP));p.setShadowLayer(9,0,0,0x88EAC773);c.drawText(&quot;B&quot;,28,141,p);c.drawText(&quot;5&quot;,101,141,p);p.clearShadowLayer();p.setShader(null);c.restore();}}"
+        errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/USA-FAVOR/USA-Favor/app/src/main/java/com/b5/shared/BrandActivity.java"
+            line="18"
+            column="683"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1=" void home(){page(&quot;USA-Favor&quot;,&quot;PREMIUM VPN   /   UNITED STATES&quot;);LinearLayout c=card();note(c,&quot;ACCESS PASS • &quot;+code);timer=text(&quot;Time Remaining: &quot;+Policy.remaining(expiry,cloud.now()),20,GOLD);c.addView(timer);LinearLayout vpn=card();status=text(&quot;Disconnected&quot;,22,WHITE);vpn.addView(status);note(vpn,&quot;Embedded endpoint • vpn318641113.opengw.net&quot;);Switch transport=new Switch(this);transport.setText(&quot;UDP 1195 (OFF = uploaded TCP 1923)&quot;);transport.setTextColor(MUTED);transport.setChecked(getSharedPreferences(&quot;b5&quot;,0).getBoolean(&quot;udp&quot;,false));vpn.addView(transport);transport.setOnCheckedChangeListener((v,on)->getSharedPreferences(&quot;b5&quot;,0).edit().putBoolean(&quot;udp&quot;,on).apply());power=button(vpn,&quot;⏻   CONNECT&quot;,()->{if(B5VpnService.blockingTraffic){prepareVpn();}else if(B5VpnService.connected||connecting){B5VpnService.disconnect();connecting=false;refresh();}else prepareVpn();});ipLabel=text(&quot;Exit IP: &quot;+ip,14,MUTED);vpn.addView(ipLabel);button(vpn,&quot;Refresh exit IP &amp; country&quot;,this::checkIp);note(vpn,&quot;Location is confirmed from the exit IP after connection; the server hostname alone does not prove New York.&quot;);"
+        errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/USA-FAVOR/USA-Favor/app/src/main/java/com/usa/user/MainActivity.java"
+            line="10"
+            column="400"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1=" LinearLayout tools=card();tools.addView(text(&quot;Device tools&quot;,21,WHITE));button(tools,&quot;Language → English (United States)&quot;,()->{message(&quot;Select English (United States) in Android Language settings.&quot;);startActivity(new Intent(Settings.ACTION_LOCALE_SETTINGS));});gpsLabel=text(&quot;GPS New York: OFF&quot;,14,MUTED);tools.addView(gpsLabel);gpsToggle=new Switch(this);gpsToggle.setText(&quot;Automatic New York mock GPS&quot;);gpsToggle.setTextColor(WHITE);gpsToggle.setChecked(getSharedPreferences(&quot;b5&quot;,0).getBoolean(&quot;gps&quot;,true));tools.addView(gpsToggle);gpsToggle.setOnCheckedChangeListener((v,on)->{getSharedPreferences(&quot;b5&quot;,0).edit().putBoolean(&quot;gps&quot;,on).apply();if(!on)stopService(new Intent(this,MockLocationService.class));else toggleGps();});button(tools,&quot;Configure mock location&quot;,this::toggleGps);note(tools,&quot;Requires location permission and Developer options → Select mock location app → USA-Favor. Android marks this as a mock location.&quot;);killLabel=text(&quot;Kill Switch: checking…&quot;,14,GOLD);tools.addView(killLabel);Switch kill=new Switch(this);kill.setText(&quot;Kill Switch ON / OFF&quot;);kill.setTextColor(WHITE);kill.setChecked(getSharedPreferences(&quot;b5&quot;,0).getBoolean(&quot;killSwitch&quot;,true));tools.addView(kill);kill.setOnCheckedChangeListener((v,on)->{getSharedPreferences(&quot;b5&quot;,0).edit().putBoolean(&quot;killSwitch&quot;,on).apply();B5VpnService svc=B5VpnService.instance;if(svc!=null)svc.applyKillSwitch();refresh();});note(tools,&quot;App guard blocks traffic during reconnect while the service is alive. Enable Android Always-on + Block connections without VPN for protection after process death/reboot.&quot;);button(tools,&quot;Android always-on protection&quot;,()->{message(&quot;In VPN settings select USA-Favor, enable Always-on VPN and Block connections without VPN. Android requires you to enable these switches.&quot;);startActivity(new Intent(Settings.ACTION_VPN_SETTINGS));});LinearLayout socials=card();socials.addView(text(&quot;Follow B5&quot;,21,WHITE));cloud.socials(this,socials);button(body,&quot;Enter a new code&quot;,()->{B5VpnService.disconnect();getSharedPreferences(&quot;b5&quot;,0).edit().remove(&quot;code&quot;).apply();codeScreen(&quot;&quot;);});footer();ui.removeCallbacks(ticker);ui.post(ticker);}"
+        errorLine2="                                                                                                                                                                                                                                                                                                                                                                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/USA-FAVOR/USA-Favor/app/src/main/java/com/usa/user/MainActivity.java"
+            line="11"
+            column="375"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1=" LinearLayout tools=card();tools.addView(text(&quot;Device tools&quot;,21,WHITE));button(tools,&quot;Language → English (United States)&quot;,()->{message(&quot;Select English (United States) in Android Language settings.&quot;);startActivity(new Intent(Settings.ACTION_LOCALE_SETTINGS));});gpsLabel=text(&quot;GPS New York: OFF&quot;,14,MUTED);tools.addView(gpsLabel);gpsToggle=new Switch(this);gpsToggle.setText(&quot;Automatic New York mock GPS&quot;);gpsToggle.setTextColor(WHITE);gpsToggle.setChecked(getSharedPreferences(&quot;b5&quot;,0).getBoolean(&quot;gps&quot;,true));tools.addView(gpsToggle);gpsToggle.setOnCheckedChangeListener((v,on)->{getSharedPreferences(&quot;b5&quot;,0).edit().putBoolean(&quot;gps&quot;,on).apply();if(!on)stopService(new Intent(this,MockLocationService.class));else toggleGps();});button(tools,&quot;Configure mock location&quot;,this::toggleGps);note(tools,&quot;Requires location permission and Developer options → Select mock location app → USA-Favor. Android marks this as a mock location.&quot;);killLabel=text(&quot;Kill Switch: checking…&quot;,14,GOLD);tools.addView(killLabel);Switch kill=new Switch(this);kill.setText(&quot;Kill Switch ON / OFF&quot;);kill.setTextColor(WHITE);kill.setChecked(getSharedPreferences(&quot;b5&quot;,0).getBoolean(&quot;killSwitch&quot;,true));tools.addView(kill);kill.setOnCheckedChangeListener((v,on)->{getSharedPreferences(&quot;b5&quot;,0).edit().putBoolean(&quot;killSwitch&quot;,on).apply();B5VpnService svc=B5VpnService.instance;if(svc!=null)svc.applyKillSwitch();refresh();});note(tools,&quot;App guard blocks traffic during reconnect while the service is alive. Enable Android Always-on + Block connections without VPN for protection after process death/reboot.&quot;);button(tools,&quot;Android always-on protection&quot;,()->{message(&quot;In VPN settings select USA-Favor, enable Always-on VPN and Block connections without VPN. Android requires you to enable these switches.&quot;);startActivity(new Intent(Settings.ACTION_VPN_SETTINGS));});LinearLayout socials=card();socials.addView(text(&quot;Follow B5&quot;,21,WHITE));cloud.socials(this,socials);button(body,&quot;Enter a new code&quot;,()->{B5VpnService.disconnect();getSharedPreferences(&quot;b5&quot;,0).edit().remove(&quot;code&quot;).apply();codeScreen(&quot;&quot;);});footer();ui.removeCallbacks(ticker);ui.post(ticker);}"
+        errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/USA-FAVOR/USA-Favor/app/src/main/java/com/usa/user/MainActivity.java"
+            line="11"
+            column="1045"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1=" void refresh(){if(status==null||!active)return;boolean on=B5VpnService.connected;if(on&amp;&amp;!wasConnected){checkIp();if(getSharedPreferences(&quot;b5&quot;,0).getBoolean(&quot;gps&quot;,true)){if(MockLocationService.permitted(this))MockLocationService.startIfPermitted(this);else if(visible&amp;&amp;!mockPromptShown){mockPromptShown=true;message(MockLocationService.INSTRUCTIONS);}}}wasConnected=on;if(on)connecting=false;status.setText(on?(&quot;US&quot;.equals(country)?&quot;🇺🇸 Connected • &quot;+city:&quot;Connected • verify exit country&quot;):connecting?&quot;Connecting securely…&quot;:&quot;Disconnected&quot;);power.setText(B5VpnService.blockingTraffic?&quot;⏻   RECONNECT&quot;:on||connecting?&quot;⏻   DISCONNECT&quot;:&quot;⏻   CONNECT&quot;);ipLabel.setText(&quot;Exit IP: &quot;+ip+(country.isEmpty()?&quot;&quot;:&quot;  /  &quot;+country));boolean mock=MockLocationService.running;gpsLabel.setText(&quot;GPS New York: &quot;+(mock?&quot;ON • Android test provider&quot;:&quot;OFF&quot;));B5VpnService s=B5VpnService.instance;boolean lockdown=Build.VERSION.SDK_INT>=29&amp;&amp;s!=null&amp;&amp;s.isLockdownEnabled();killLabel.setText(&quot;Kill Switch: &quot;+(getSharedPreferences(&quot;b5&quot;,0).getBoolean(&quot;killSwitch&quot;,true)?&quot;ON&quot;:&quot;OFF&quot;)+(B5VpnService.blockingTraffic?&quot; • traffic blocked&quot;:&quot;&quot;)+(lockdown?&quot; • Android lockdown enabled&quot;:&quot;&quot;));}"
+        errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/USA-FAVOR/USA-Favor/app/src/main/java/com/usa/user/MainActivity.java"
+            line="18"
+            column="665"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1=" void refresh(){if(status==null||!active)return;boolean on=B5VpnService.connected;if(on&amp;&amp;!wasConnected){checkIp();if(getSharedPreferences(&quot;b5&quot;,0).getBoolean(&quot;gps&quot;,true)){if(MockLocationService.permitted(this))MockLocationService.startIfPermitted(this);else if(visible&amp;&amp;!mockPromptShown){mockPromptShown=true;message(MockLocationService.INSTRUCTIONS);}}}wasConnected=on;if(on)connecting=false;status.setText(on?(&quot;US&quot;.equals(country)?&quot;🇺🇸 Connected • &quot;+city:&quot;Connected • verify exit country&quot;):connecting?&quot;Connecting securely…&quot;:&quot;Disconnected&quot;);power.setText(B5VpnService.blockingTraffic?&quot;⏻   RECONNECT&quot;:on||connecting?&quot;⏻   DISCONNECT&quot;:&quot;⏻   CONNECT&quot;);ipLabel.setText(&quot;Exit IP: &quot;+ip+(country.isEmpty()?&quot;&quot;:&quot;  /  &quot;+country));boolean mock=MockLocationService.running;gpsLabel.setText(&quot;GPS New York: &quot;+(mock?&quot;ON • Android test provider&quot;:&quot;OFF&quot;));B5VpnService s=B5VpnService.instance;boolean lockdown=Build.VERSION.SDK_INT>=29&amp;&amp;s!=null&amp;&amp;s.isLockdownEnabled();killLabel.setText(&quot;Kill Switch: &quot;+(getSharedPreferences(&quot;b5&quot;,0).getBoolean(&quot;killSwitch&quot;,true)?&quot;ON&quot;:&quot;OFF&quot;)+(B5VpnService.blockingTraffic?&quot; • traffic blocked&quot;:&quot;&quot;)+(lockdown?&quot; • Android lockdown enabled&quot;:&quot;&quot;));}"
+        errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/USA-FAVOR/USA-Favor/app/src/main/java/com/usa/user/MainActivity.java"
+            line="18"
+            column="778"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1=" void refresh(){if(status==null||!active)return;boolean on=B5VpnService.connected;if(on&amp;&amp;!wasConnected){checkIp();if(getSharedPreferences(&quot;b5&quot;,0).getBoolean(&quot;gps&quot;,true)){if(MockLocationService.permitted(this))MockLocationService.startIfPermitted(this);else if(visible&amp;&amp;!mockPromptShown){mockPromptShown=true;message(MockLocationService.INSTRUCTIONS);}}}wasConnected=on;if(on)connecting=false;status.setText(on?(&quot;US&quot;.equals(country)?&quot;🇺🇸 Connected • &quot;+city:&quot;Connected • verify exit country&quot;):connecting?&quot;Connecting securely…&quot;:&quot;Disconnected&quot;);power.setText(B5VpnService.blockingTraffic?&quot;⏻   RECONNECT&quot;:on||connecting?&quot;⏻   DISCONNECT&quot;:&quot;⏻   CONNECT&quot;);ipLabel.setText(&quot;Exit IP: &quot;+ip+(country.isEmpty()?&quot;&quot;:&quot;  /  &quot;+country));boolean mock=MockLocationService.running;gpsLabel.setText(&quot;GPS New York: &quot;+(mock?&quot;ON • Android test provider&quot;:&quot;OFF&quot;));B5VpnService s=B5VpnService.instance;boolean lockdown=Build.VERSION.SDK_INT>=29&amp;&amp;s!=null&amp;&amp;s.isLockdownEnabled();killLabel.setText(&quot;Kill Switch: &quot;+(getSharedPreferences(&quot;b5&quot;,0).getBoolean(&quot;killSwitch&quot;,true)?&quot;ON&quot;:&quot;OFF&quot;)+(B5VpnService.blockingTraffic?&quot; • traffic blocked&quot;:&quot;&quot;)+(lockdown?&quot; • Android lockdown enabled&quot;:&quot;&quot;));}"
+        errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/USA-FAVOR/USA-Favor/app/src/main/java/com/usa/user/MainActivity.java"
+            line="18"
+            column="968"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1=" void refresh(){if(status==null||!active)return;boolean on=B5VpnService.connected;if(on&amp;&amp;!wasConnected){checkIp();if(getSharedPreferences(&quot;b5&quot;,0).getBoolean(&quot;gps&quot;,true)){if(MockLocationService.permitted(this))MockLocationService.startIfPermitted(this);else if(visible&amp;&amp;!mockPromptShown){mockPromptShown=true;message(MockLocationService.INSTRUCTIONS);}}}wasConnected=on;if(on)connecting=false;status.setText(on?(&quot;US&quot;.equals(country)?&quot;🇺🇸 Connected • &quot;+city:&quot;Connected • verify exit country&quot;):connecting?&quot;Connecting securely…&quot;:&quot;Disconnected&quot;);power.setText(B5VpnService.blockingTraffic?&quot;⏻   RECONNECT&quot;:on||connecting?&quot;⏻   DISCONNECT&quot;:&quot;⏻   CONNECT&quot;);ipLabel.setText(&quot;Exit IP: &quot;+ip+(country.isEmpty()?&quot;&quot;:&quot;  /  &quot;+country));boolean mock=MockLocationService.running;gpsLabel.setText(&quot;GPS New York: &quot;+(mock?&quot;ON • Android test provider&quot;:&quot;OFF&quot;));B5VpnService s=B5VpnService.instance;boolean lockdown=Build.VERSION.SDK_INT>=29&amp;&amp;s!=null&amp;&amp;s.isLockdownEnabled();killLabel.setText(&quot;Kill Switch: &quot;+(getSharedPreferences(&quot;b5&quot;,0).getBoolean(&quot;killSwitch&quot;,true)?&quot;ON&quot;:&quot;OFF&quot;)+(B5VpnService.blockingTraffic?&quot; • traffic blocked&quot;:&quot;&quot;)+(lockdown?&quot; • Android lockdown enabled&quot;:&quot;&quot;));}"
+        errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ~~~~~~~~~~~">
+        <location
+            file="/workspace/USA-FAVOR/USA-Favor/app/src/main/java/com/usa/user/MainActivity.java"
+            line="18"
+            column="665"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1=" void refresh(){if(status==null||!active)return;boolean on=B5VpnService.connected;if(on&amp;&amp;!wasConnected){checkIp();if(getSharedPreferences(&quot;b5&quot;,0).getBoolean(&quot;gps&quot;,true)){if(MockLocationService.permitted(this))MockLocationService.startIfPermitted(this);else if(visible&amp;&amp;!mockPromptShown){mockPromptShown=true;message(MockLocationService.INSTRUCTIONS);}}}wasConnected=on;if(on)connecting=false;status.setText(on?(&quot;US&quot;.equals(country)?&quot;🇺🇸 Connected • &quot;+city:&quot;Connected • verify exit country&quot;):connecting?&quot;Connecting securely…&quot;:&quot;Disconnected&quot;);power.setText(B5VpnService.blockingTraffic?&quot;⏻   RECONNECT&quot;:on||connecting?&quot;⏻   DISCONNECT&quot;:&quot;⏻   CONNECT&quot;);ipLabel.setText(&quot;Exit IP: &quot;+ip+(country.isEmpty()?&quot;&quot;:&quot;  /  &quot;+country));boolean mock=MockLocationService.running;gpsLabel.setText(&quot;GPS New York: &quot;+(mock?&quot;ON • Android test provider&quot;:&quot;OFF&quot;));B5VpnService s=B5VpnService.instance;boolean lockdown=Build.VERSION.SDK_INT>=29&amp;&amp;s!=null&amp;&amp;s.isLockdownEnabled();killLabel.setText(&quot;Kill Switch: &quot;+(getSharedPreferences(&quot;b5&quot;,0).getBoolean(&quot;killSwitch&quot;,true)?&quot;ON&quot;:&quot;OFF&quot;)+(B5VpnService.blockingTraffic?&quot; • traffic blocked&quot;:&quot;&quot;)+(lockdown?&quot; • Android lockdown enabled&quot;:&quot;&quot;));}"
+        errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/USA-FAVOR/USA-Favor/app/src/main/java/com/usa/user/MainActivity.java"
+            line="18"
+            column="778"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1=" void refresh(){if(status==null||!active)return;boolean on=B5VpnService.connected;if(on&amp;&amp;!wasConnected){checkIp();if(getSharedPreferences(&quot;b5&quot;,0).getBoolean(&quot;gps&quot;,true)){if(MockLocationService.permitted(this))MockLocationService.startIfPermitted(this);else if(visible&amp;&amp;!mockPromptShown){mockPromptShown=true;message(MockLocationService.INSTRUCTIONS);}}}wasConnected=on;if(on)connecting=false;status.setText(on?(&quot;US&quot;.equals(country)?&quot;🇺🇸 Connected • &quot;+city:&quot;Connected • verify exit country&quot;):connecting?&quot;Connecting securely…&quot;:&quot;Disconnected&quot;);power.setText(B5VpnService.blockingTraffic?&quot;⏻   RECONNECT&quot;:on||connecting?&quot;⏻   DISCONNECT&quot;:&quot;⏻   CONNECT&quot;);ipLabel.setText(&quot;Exit IP: &quot;+ip+(country.isEmpty()?&quot;&quot;:&quot;  /  &quot;+country));boolean mock=MockLocationService.running;gpsLabel.setText(&quot;GPS New York: &quot;+(mock?&quot;ON • Android test provider&quot;:&quot;OFF&quot;));B5VpnService s=B5VpnService.instance;boolean lockdown=Build.VERSION.SDK_INT>=29&amp;&amp;s!=null&amp;&amp;s.isLockdownEnabled();killLabel.setText(&quot;Kill Switch: &quot;+(getSharedPreferences(&quot;b5&quot;,0).getBoolean(&quot;killSwitch&quot;,true)?&quot;ON&quot;:&quot;OFF&quot;)+(B5VpnService.blockingTraffic?&quot; • traffic blocked&quot;:&quot;&quot;)+(lockdown?&quot; • Android lockdown enabled&quot;:&quot;&quot;));}"
+        errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/USA-FAVOR/USA-Favor/app/src/main/java/com/usa/user/MainActivity.java"
+            line="18"
+            column="968"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1=" final Runnable ticker=new Runnable(){public void run(){if(!alive)return;if(active){if(Policy.expired(expiry,cloud.now())){lock();return;}if(timer!=null)timer.setText(&quot;Time Remaining: &quot;+Policy.remaining(expiry,cloud.now()));refresh();}ui.postDelayed(this,1000);}};"
+        errorLine2="                                                                                                                                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/USA-FAVOR/USA-Favor/app/src/main/java/com/usa/user/MainActivity.java"
+            line="19"
+            column="168"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1=" final Runnable ticker=new Runnable(){public void run(){if(!alive)return;if(active){if(Policy.expired(expiry,cloud.now())){lock();return;}if(timer!=null)timer.setText(&quot;Time Remaining: &quot;+Policy.remaining(expiry,cloud.now()));refresh();}ui.postDelayed(this,1000);}};"
+        errorLine2="                                                                                                                                                                       ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/USA-FAVOR/USA-Favor/app/src/main/java/com/usa/user/MainActivity.java"
+            line="19"
+            column="168"/>
+    </issue>
+
+</issues>

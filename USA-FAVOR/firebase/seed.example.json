@@ -1,0 +1,13 @@
+{
+  "admins": {
+    "REPLACE_WITH_FIREBASE_AUTH_UID": true
+  },
+  "config": {
+    "socials": {
+      "tiktok": "",
+      "instagram": "",
+      "youtube": "",
+      "telegram": ""
+    }
+  }
+}

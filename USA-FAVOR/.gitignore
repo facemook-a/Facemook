@@ -1,0 +1,8 @@
+/.gradle/
+**/build/
+/local.properties
+**/local.properties
+*.jks
+*.keystore
+/firebase/node_modules/
+/firebase/.firebase/

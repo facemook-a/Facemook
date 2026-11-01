@@ -1,0 +1,13 @@
+# Validation of the supplied APKs
+
+- Root Android Studio modules: Admin (com.usa.admin), User (com.usa.user), embedded openvpn library.
+- `assembleDebug`, unit tests and `lintDebug` passed for both applications with Gradle 8.11.1, AGP 8.9.1, JDK 21.0.9, SDK 35.
+- 17 unit/Robolectric tests passed: Admin 7, User 10; no failures or skipped unit tests. Android shadow tests exercise the 2.5s splash, missing-config behavior, code format/expiry/extensions/countdown, AppOps checks, mock-provider lifecycle/coordinate payload, and parsing both certificate-bearing OVPN profiles. Mock-provider APIs are explicitly shadowed because Robolectric does not implement those Android APIs; this does not prove physical-device location behavior.
+- Lint completed with zero errors. Remaining warnings include intentionally collected Android ID, English UI strings/localization, notification permission handling, and rendering/style suggestions; full XML reports included. MockLocation lint suppression is limited to the intentional Developer Options-gated permission in the user manifest.
+- Both APK signatures verified with Android apksigner. They are signed with an Android DEBUG certificate (not a production signing key).
+- Verified that the original US-NewYork.ovpn is byte-identical inside the user APK and that native OpenVPN executables for four Android ABIs are packaged. Official upstream APK signature verified before extracting its binaries. Provenance and matching source included.
+- Firebase database rules and an emulator test suite are supplied but NOT executed: the official database emulator download at storage.googleapis.com is blocked by this cloud network policy. No real Firebase project identifiers were supplied, so live authentication, transactions and presence against a deployed database remain unverified.
+- No Android device/emulator is attached. Real VPN handshake, actual exit IP/country, hardware mock-location acceptance, reconnect/packet-leak tests and Android Always-on behavior remain unverified on a device. The public VPN endpoint can change or be offline.
+- No uploaded ZIP was read. Facemook application source/data/manifests remained unchanged; its node_modules directory is retained setup output from the earlier onboarding task.
+
+Before live use: configure Firebase and publish the supplied rules; authorize an admin UID; install both APKs; generate/activate a test code; consent to VPN; grant location/notification permissions; select USA-Favor as the mock-location app; verify exit IP; test disconnect/reconnect while checking IPv4/IPv6 traffic; enable OS Always-on + Block connections without VPN for protection across process death/reboot.
